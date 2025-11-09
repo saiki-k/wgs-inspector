@@ -1,0 +1,8 @@
+build/
+
+exported_save_files/
+
+node_modules/
+
+.DS_Store
+Thumbs.db
