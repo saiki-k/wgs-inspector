@@ -11,12 +11,14 @@ I haven't tested it, but this should work with Hollow Knight saves as well.
 #### Option 1: Run the executable (Recommended)
 
 1. Download `silksong-wgs-exporter.exe` from the [latest release](../../releases)
-2. Double-click to run
-3. Find your saves in the `exported_save_files/` folder, created in the same directory as the executable.
+2. Run the executable
+3. Find your saves in the `exported_save_files/` folder, created in the same directory as the executable
 
 #### Option 2: Run it from source
 
 ```bash
+git clone --depth 1 https://github.com/saiki-k/silksong-wgs-exporter.git
+cd silksong-wgs-exporter
 npm install
 node src/index.js
 ```
