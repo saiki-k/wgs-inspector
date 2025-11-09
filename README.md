@@ -1,22 +1,51 @@
-# Hollow Knight: Silksong Save Exporter
+# Hollow Knight: Silksong Game Pass Save Exporter
 
-Export Hollow Knight: Silksong saves from Game Pass to Steam-compatible format.
+[Download](../../releases) • [Documentation](src/TECHNICAL.md) • [Report Bugs](../../issues)
 
-## Quick Start
+#### Export your saves from Game Pass to Steam-compatible format
 
-**Download** the [latest release](../../releases) executable and run it, or:
+I haven't tested it, but this should work with Hollow Knight saves as well.
+
+## 🚀 Quick start
+
+#### Option 1: Run the executable (Recommended)
+
+1. Download `silksong-wgs-exporter.exe` from the [latest release](../../releases)
+2. Double-click to run
+3. Find your saves in the `exported_save_files/` folder, created in the same directory as the executable.
+
+#### Option 2: Run it from source
 
 ```bash
 npm install
 node src/index.js
 ```
 
-Save files are exported to a directory called `exported_save_files/`, created next to the executable, or the current working directory if run from source.
+## 📁 What gets exported
 
-## Build
-
-```bash
-npm run build  # → build/silksong-wgs-exporter.exe
+```
+exported_save_files/
+├── user1.dat, user2.dat, ...                  # Save slots
+├── shared.dat
+└── Restore_Points1/, Restore_Points2/, ...    # Restore points
 ```
 
-Requires Node.js 20+. See [src/TECHNICAL.md](src/TECHNICAL.md) for more details.
+## 🛠️ Build the executable
+
+```bash
+npm run build  # Creates build/silksong-wgs-exporter.exe
+```
+
+Requires Node.js 20+. Uses [Node.js SEA](https://nodejs.org/api/single-executable-applications.html) for standalone executables.
+
+## 📚 Documentation
+
+For technical details about the WGS container format and API reference, see [src/TECHNICAL.md](src/TECHNICAL.md).
+
+## 🤝 Contributing
+
+Contributions welcome! Feel free to open an issue or submit a pull request.
+
+### 📄 License
+
+MIT © [saiki-k](https://github.com/saiki-k)
