@@ -4,11 +4,9 @@
 
 Export save files from **Windows Gaming Services** (Game Pass) to a readable format.
 
-Game Pass stores save files in obfuscated WGS containers with cryptic directory names (GUIDs), making them inaccessible. This tool extracts and exports your saves, with special support for games like:
+![WGS Inspector Screenshot](./Screenshot.png)
 
--   **Hollow Knight: Silksong** - Converts to Steam-compatible format
--   **Hollow Knight** - Exports with proper naming
--   **Any other Game Pass game** - Generic export with container/file structure preserved
+Game Pass stores save files in obfuscated WGS containers with cryptic directory names (GUIDs), making them inaccessible. This tool inspects, and optionally exports those saves to a usable format.
 
 ## 🚀 Quick Setup
 
@@ -49,9 +47,9 @@ You can either use the pre-built standalone executable or run the project from s
 
 ## 📁 Export Formats
 
-### With Transformer (Silksong)
+### With Transformer
 
-When a game-specific transformer is available, saves are converted to the expected format:
+When a game-specific transformer is available, saves are exported in a format as designed by the transformer. For instance, Silksong saves are exported by the Hollow Knight / Hollow Knight: Silksong transformer exports files like so:
 
 ```
 exported_save_files/
@@ -95,18 +93,19 @@ The executable and zip package will be created in the `build/` directory. Requir
 src/
 ├── index.js                     # Entry point
 ├── cli/                         # Interactive CLI
-│   ├── index.js                 # Main CLI flow
-│   └── helpers.js               # Display & prompt functions
-├── scanner/                     # WGS file parsers
-│   ├── index.js                 # Public scanner API
+│   ├── index.js
+│   └── helpers.js
+├── scanner/                     # WGS parsers
+│   ├── index.js
 │   ├── containerIndexScanner.js # Parses containers.index
 │   └── containerScanner.js      # Parses container.* files
 ├── exporter/                    # Export logic
 │   ├── index.js                 # Generic exporter
 │   └── transformers/            # Game-specific exporters
-│       ├── index.js             # Exporter registry
+│       ├── index.js             # Game-specific exporters' registry
 │       └── hollowKnight/        # Hollow Knight / Hollow Knight: Silksong exporter
-└── build/                       # Build scripts
+└── build/
+    └── index.js                 # Build script
 ```
 
 ## 🤝 Contributing
