@@ -1,9 +1,0 @@
-{
-	"main": "src/index.js",
-	"output": "build/sea-prep.blob",
-	"disableExperimentalSEAWarning": true,
-	"assets": {
-		"config.js": "src/config.js",
-		"codec.js": "src/codec.js"
-	}
-}

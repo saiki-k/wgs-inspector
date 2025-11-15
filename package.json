@@ -1,13 +1,13 @@
 {
-	"name": "silksong-wgs-exporter",
-	"version": "1.0.0",
-	"description": "Export Hollow Knight: Silksong saves from Game Pass (Xbox WGS) to Steam-compatible format",
+	"name": "wgs-inspector",
+	"version": "2.0.0",
+	"description": "Export saves from Game Pass (WGS) games to compatible formats",
 	"main": "src/index.js",
 	"bin": {
-		"silksong-export": "./src/index.js"
+		"wgs-inspector": "wgs-inspector"
 	},
 	"scripts": {
-		"build": "node src/build.js"
+		"build": "node src/build"
 	},
 	"engines": {
 		"node": ">=20.6.0"
@@ -21,7 +21,13 @@
 	],
 	"author": "Sai Kishore Komanduri",
 	"license": "MIT",
+	"dependencies": {
+		"chalk": "^4.1.2",
+		"cli-table3": "^0.6.5",
+		"inquirer": "^8.2.6"
+	},
 	"devDependencies": {
+		"@vercel/ncc": "^0.38.1",
 		"adm-zip": "^0.5.16",
 		"png-to-ico": "^2.1.8",
 		"postject": "^1.0.0-alpha.6",
