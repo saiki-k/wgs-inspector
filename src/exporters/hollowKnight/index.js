@@ -3,14 +3,14 @@ const path = require('path');
 const { encodeData, CSHARP_HEADER } = require('./codec');
 
 /**
- * Hollow Knight-specific transformer
- * Handles the specific file structure expected by Steam version of Hollow Knight / Hollow Knight: Silksong
+ * Hollow Knight-specific exporter
+ * Exports files in a structured format as defined by this exporter
  * @param {Object} scanData - Scanned container data
  * @param {string} destinationDir - Export destination directory
  * @param {Object} results - Results object to populate
  * @returns {Object} Export results
  */
-function hollowKnightTransformer(scanData, destinationDir, results) {
+function hollowKnightExporter(scanData, destinationDir, results) {
 	const firstContainer = scanData.entries[0];
 	if (!firstContainer || !firstContainer.folderName) {
 		results.errors.push({ file: 'N/A', reason: 'No containers found in scan data' });
@@ -125,5 +125,5 @@ function hollowKnightTransformer(scanData, destinationDir, results) {
 module.exports = {
 	name: 'Hollow Knight / Hollow Knight: Silksong (Steam)',
 	color: 'magenta',
-	transformer: hollowKnightTransformer,
+	exporter: hollowKnightExporter,
 };

@@ -1,8 +1,7 @@
 const path = require('path');
 const chalk = require('chalk');
-const { scanWGSPackages, scanPackageContainers } = require('../scanner');
-const { exportContainers } = require('../exporter');
-const { getTransformer } = require('../exporter/transformers');
+const { scanWGSPackages, scanPackageContainers } = require('../scanners');
+const { getExporter } = require('../exporters');
 const {
 	displayPackagesTable,
 	displayContainerSummaryTable,
@@ -15,7 +14,7 @@ const {
 
 async function runCLI() {
 	console.log(chalk.bold.cyan('\n' + '='.repeat(80)));
-	console.log(chalk.bold.cyan('Windows Gaming Services - Save File Exporter'));
+	console.log(chalk.bold.cyan("Windows Gaming Services - Save Files' Inspector & Exporter"));
 	console.log(chalk.bold.cyan('='.repeat(80)));
 
 	try {
@@ -52,8 +51,8 @@ async function runCLI() {
 
 		displayContainerFilesTable(scanData.entries);
 
-		const availableTransformer = getTransformer(selectedPackage.packageName);
-		const { shouldExport, useTransformer } = await promptExportConfirmation(availableTransformer);
+		const availableExporter = getExporter(selectedPackage.packageName);
+		const { shouldExport, useExporter, exportMethod } = await promptExportConfirmation(availableExporter);
 
 		if (!shouldExport) {
 			console.log(chalk.yellow('\n⊘ Export cancelled.'));
@@ -61,25 +60,41 @@ async function runCLI() {
 			return;
 		}
 
-		let transformer = null;
-		if (useTransformer && availableTransformer) {
-			transformer = availableTransformer.transformer;
-			const transformerName = availableTransformer.name;
-			const transformerColor = availableTransformer.color || 'green';
-			console.log(chalk.bold.green(`\n✓ Using ${chalk[transformerColor](transformerName)} transformer`));
-		} else {
-			console.log(chalk.bold.yellow('\n● Using generic export'));
+		let exporter = null;
+
+		if (useExporter) {
+			const exporterModule = exportMethod === 'generic' ? getExporter('generic') : availableExporter;
+			exporter = exporterModule.exporter;
+
+			const exporterName = exporterModule.name;
+			const exporterColor = exporterModule.color || 'green';
+			console.log(chalk.bold.green(`\n✓ Using ${chalk[exporterColor](exporterName)} exporter`));
 		}
 
 		const defaultExportPath = path.join(process.cwd(), 'exported_save_files');
 		const exportPath = await promptExportDestination(defaultExportPath);
 
 		console.log(chalk.bold(`\n📤 Exporting to: ${chalk.cyan(exportPath)}`));
-		const results = exportContainers(scanData, exportPath, transformer);
 
-		displayExportResults(results);
+		const results = {
+			exported: [],
+			skipped: [],
+			errors: [],
+		};
 
-		if (results.exported.length > 0) {
+		const fs = require('fs');
+		if (!fs.existsSync(exportPath)) {
+			fs.mkdirSync(exportPath, { recursive: true });
+		}
+
+		const resolvedExportPath = path.resolve(exportPath);
+		const exportResult = exporter
+			? exporter(scanData, resolvedExportPath, results)
+			: require('../exporters/generic').exporter(scanData, resolvedExportPath, results);
+
+		displayExportResults(exportResult);
+
+		if (exportResult.exported.length > 0) {
 			console.log(chalk.bold.green(`\n✓ Export complete! Files saved to: ${exportPath}`));
 		} else {
 			console.log(chalk.bold.yellow('\n● No files were exported.'));

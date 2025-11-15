@@ -2,32 +2,18 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * Export container files to destination directory
+ * Generic exporter for WGS containers
+ * Exports files as they are found in the container structure
  * @param {Object} scanData - Scanned container data from scanner
- * @param {string} destinationDir - Base directory for exports
- * @param {Function|null} transformer - Optional transformer function
+ * @param {string} destinationDir - Export destination directory
+ * @param {Object} results - Results object to populate
  * @returns {Object} Export results
  */
-function exportContainers(scanData, destinationDir, transformer = null) {
-	const results = {
-		exported: [],
-		skipped: [],
-		errors: [],
-	};
-
-	if (!fs.existsSync(destinationDir)) {
-		fs.mkdirSync(destinationDir, { recursive: true });
-	}
-
-	const resolvedDestDir = path.resolve(destinationDir);
+function genericExporter(scanData, destinationDir, results) {
 	const wgsBasePath = scanData.wgsBasePath;
 
 	if (!wgsBasePath) {
 		throw new Error('WGS base path not found in scan data');
-	}
-
-	if (transformer && typeof transformer === 'function') {
-		return transformer(scanData, resolvedDestDir, results);
 	}
 
 	for (const entry of scanData.entries) {
@@ -39,7 +25,7 @@ function exportContainers(scanData, destinationDir, transformer = null) {
 			continue;
 		}
 
-		const containerDestDir = path.join(resolvedDestDir, containerName);
+		const containerDestDir = path.join(destinationDir, containerName);
 		if (!fs.existsSync(containerDestDir)) {
 			fs.mkdirSync(containerDestDir, { recursive: true });
 		}
@@ -65,7 +51,7 @@ function exportContainers(scanData, destinationDir, transformer = null) {
 
 			try {
 				fs.copyFileSync(sourcePath, destPath);
-				const relativePath = path.relative(resolvedDestDir, destPath);
+				const relativePath = path.relative(destinationDir, destPath);
 				results.exported.push({
 					container: containerName,
 					file: filename,
@@ -81,20 +67,8 @@ function exportContainers(scanData, destinationDir, transformer = null) {
 	return results;
 }
 
-/**
- * Get source file path for a container file
- * @param {Object} containerEntry - Container entry from scan data
- * @param {Object} fileEntry - File entry from container data
- * @param {string} wgsBasePath - Base WGS directory path
- * @returns {string} Source file path
- */
-function getSourceFilePath(containerEntry, fileEntry, wgsBasePath) {
-	const folderName = containerEntry.folderName;
-	const fileGuid = fileEntry.fileGuid || fileEntry.guid.toUpperCase().replace(/-/g, '');
-	return path.join(wgsBasePath, folderName, fileGuid);
-}
-
 module.exports = {
-	exportContainers,
-	getSourceFilePath,
+	name: 'Generic',
+	color: 'yellow',
+	exporter: genericExporter,
 };

@@ -141,7 +141,7 @@ class ContainerIndexScanner {
 
 		// Try different container entry formats
 		const formats = [
-			this.parseContainerEntryFormatWithDupName.bind(this),
+			this.parseContainerEntryFormatWithNameDup.bind(this),
 			this.parseContainerEntryFormatWithPadding.bind(this),
 		];
 
@@ -176,7 +176,7 @@ class ContainerIndexScanner {
 		};
 	}
 
-	parseContainerEntryFormatWithDupName(offset) {
+	parseContainerEntryFormatWithNameDup(offset) {
 		// Format: displayName → displayNameDup → hexIdentifier (Silksong format)
 		const [displayNameDup, positionAfterName2] = this.tryReadUTF16(offset);
 		if (displayNameDup === null) return null;

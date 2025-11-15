@@ -1,12 +1,14 @@
 # WGS Inspector
 
-[Download](../../releases) • [Report Bugs](../../issues)
+[Download](../../releases) • [Documentation](./docs) • [Report Bugs](../../issues)
 
 Export save files from **Windows Gaming Services** (Game Pass) to a readable format.
 
-![WGS Inspector Screenshot](./Screenshot.png)
+![WGS Inspector Screenshot](./screenshot.png)
 
-Game Pass stores save files in obfuscated WGS containers with cryptic directory names (GUIDs), making them inaccessible. This tool inspects, and optionally exports those saves to a usable format.
+Game Pass stores save files in obfuscated WGS containers with cryptic directory names (GUIDs), making them difficult to access. This tool inspects these containers and optionally exports the save files to a readable format, as they would appear on saner 😄 platforms like Steam.
+
+I originally wrote this for exporting _Hollow Knight: Silksong_ saves from Game Pass. The <img src="./src/build/assets/Silkeater.png" alt="Silkeater" height="16"/> Silkeater icon used for the executable is from Silksong, a consumable item that retrieves Hornet's Cocoon, regardless of where it is in the world.
 
 ## 🚀 Quick Setup
 
@@ -14,16 +16,16 @@ You can either use the pre-built standalone executable or run the project from s
 
 ### Use the standalone executable (Recommended)
 
-1. Download and extract `wgs-inspector-windows.zip` from the [latest release](../../releases)
+1. Download and extract `wgs-inspector.zip` from the [latest release](../../releases)
 
 2. Run `wgs-inspector.exe`
 
-3. Select your game from the interactive menu
+3. Select the appropriate package name for your game from the interactive menu
 
 4. Choose export method:
 
-    - **Game-specific transformer** (if available) - Converts to proper format with meaningful filenames
-    - **Generic export** - Raw files with original container structure
+    - **Game-specific exporter** (if available) - Exports files in a structured format as defined by the exporter
+    - **Generic exporter** - Exports files as they are found in the containers
 
 5. Find your saves in `exported_save_files/` (or your chosen directory)
 
@@ -47,9 +49,9 @@ You can either use the pre-built standalone executable or run the project from s
 
 ## 📁 Export Formats
 
-### With Transformer
+### With a game-specific exporter
 
-When a game-specific transformer is available, saves are exported in a format as designed by the transformer. For instance, Silksong saves are exported by the Hollow Knight / Hollow Knight: Silksong transformer exports files like so:
+When a game-specific exporter is available, saves are exported in a structured format as defined by the exporter. For instance, the Hollow Knight / Hollow Knight: Silksong exporter exports files like so:
 
 ```
 exported_save_files/
@@ -58,23 +60,26 @@ exported_save_files/
 ├── shared.dat                   # Shared game data (encrypted for Steam)
 ├── Restore_Points1/             # Restore points for slot 1
 │   ├── NODELrestoreData1.dat
-│   └── restoreData2.dat
-└── Restore_Points2/             # Restore points for slot 2
-    └── NODELrestoreData2.dat
+│   ├── restoreData2.dat
+│   └── ...
+├── Restore_Points2/             # Restore points for slot 2
+│    ├── NODELrestoreData2.dat
+│    └── ...
+└── ...
 ```
 
-### Generic Export
+### With the generic exporter
 
-For games without a transformer, files are exported with their container structure:
+For games without a specific exporter, or when using the generic exporter, files are exported as they are found in the containers. For instance, a generic export for Hollow Knight save files looks like this:
 
 ```
 exported_save_files/
-├── save1/
-│   └── user.dat
-├── save2/
-│   └── user.dat
-└── Preferences/
-    └── settings.json
+├── save1/          # Container name
+│   └── user.dat    # File name
+├── Preferences/    # Container name
+│   └── Data        # File name
+└── ...
+
 ```
 
 ## 🛠️ Building from Source
@@ -99,28 +104,43 @@ src/
 │   ├── index.js
 │   ├── containerIndexScanner.js # Parses containers.index
 │   └── containerScanner.js      # Parses container.* files
-├── exporter/                    # Export logic
-│   ├── index.js                 # Generic exporter
-│   └── transformers/            # Game-specific exporters
-│       ├── index.js             # Game-specific exporters' registry
-│       └── hollowKnight/        # Hollow Knight / Hollow Knight: Silksong exporter
+├── exporters/                   # Export implementations
+│   ├── index.js                 # Exporter registry (PACKAGE_EXPORTER_MAP)
+│   ├── generic/                 # Generic exporter
+│   │   └── index.js
+│   └── hollowKnight/            # Hollow Knight / Hollow Knight: Silksong exporter
+│       ├── index.js
+│       └── codec.js
+├── docs/                        # Technical documentation
+│   ├── SCANNERS.md              # Scanner module overview
+│   └── exporters/
+│       ├── README.md            # Exporter system overview
+│       └── HOLLOW_KNIGHT.md     # Hollow Knight/Silksong exporter overview
 └── build/
     └── index.js                 # Build script
 ```
+
+## 📚 Documentation
+
+See [docs/](./docs) for detailed technical documentation on scanners, exporters, and (any) game-specific exporter implementations.
+
+-   [Scanner Module](./docs/SCANNERS.md) - WGS container parsing details
+-   [Exporters Module](./docs/exporters/README.md) - Exporter system overview
+-   [Hollow Knight Exporter](./docs/exporters/HOLLOW_KNIGHT.md) - Hollow Knight/Silksong exporter overview
 
 ## 🤝 Contributing
 
 Contributions welcome! Feel free to open an issue or submit a pull request.
 
-### Adding Game Support
+### Adding new game-specific exporters
 
-To add a game-specific exporter for a new game:
+To add an exporter for a new game:
 
-1. Create a new exporter in `src/exporter/transformers/your-game/`
-2. Export an object with `{ name, color, transformer }`
-3. Register it in `src/exporter/transformers/index.js`
+1. Create a new exporter in `src/exporters/your-game/`
+2. Export an object with `{ name, color, exporter }`
+3. Register it in `src/exporters/index.js` in the `PACKAGE_EXPORTER_MAP`
 
-See `src/exporter/transformers/hollowKnight/` for a reference implementation.
+See `src/exporters/hollowKnight/` for a reference implementation or read the [Exporters documentation](./docs/exporters/README.md).
 
 ## 📄 License
 

@@ -113,7 +113,7 @@ async function promptPackageSelection(packages) {
 	return packages[packageIndex];
 }
 
-async function promptExportConfirmation(availableTransformer) {
+async function promptExportConfirmation(availableExporter) {
 	const { shouldExport } = await inquirer.prompt([
 		{
 			type: 'confirm',
@@ -123,12 +123,17 @@ async function promptExportConfirmation(availableTransformer) {
 		},
 	]);
 
-	if (!shouldExport || !availableTransformer) {
-		return { shouldExport, useTransformer: false };
+	if (!shouldExport || !availableExporter) {
+		return { shouldExport, useExporter: false };
 	}
 
-	const transformerName = availableTransformer.name;
-	const transformerColor = availableTransformer.color || 'cyan';
+	const exporterName = availableExporter.name;
+	const exporterColor = availableExporter.color || 'cyan';
+
+	const { getExporter } = require('../exporters');
+	const genericExporter = getExporter('generic');
+	const genericName = genericExporter.name;
+	const genericColor = genericExporter.color || 'yellow';
 
 	const { exportMethod } = await inquirer.prompt([
 		{
@@ -137,29 +142,30 @@ async function promptExportConfirmation(availableTransformer) {
 			message: 'How would you like to export these files?',
 			choices: [
 				{
-					name: `Use ${chalk[transformerColor](transformerName)} transformer`,
-					value: 'transformer',
+					name: `Use ${chalk[exporterColor](exporterName)} exporter`,
+					value: 'exporter',
 				},
 				{
-					name: 'Generic export (raw files)',
+					name: `Use ${chalk[genericColor](genericName)} exporter`,
 					value: 'generic',
 				},
 				{
-					name: 'Cancel',
+					name: 'Cancel export',
 					value: 'cancel',
 				},
 			],
-			default: 'transformer',
+			default: 'exporter',
 		},
 	]);
 
 	if (exportMethod === 'cancel') {
-		return { shouldExport: false, useTransformer: false };
+		return { shouldExport: false, useExporter: false, exportMethod: null };
 	}
 
 	return {
 		shouldExport: true,
-		useTransformer: exportMethod === 'transformer',
+		useExporter: true,
+		exportMethod: exportMethod,
 	};
 }
 
