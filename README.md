@@ -27,7 +27,7 @@ You can either use the pre-built standalone executable or run the project from s
     - **Game-specific exporter** (if available) - Exports files in a structured format as defined by the exporter
     - **Generic exporter** - Exports files as they are found in the containers
 
-5. Find your saves in `exported_save_files/` (or your chosen directory)
+5. Find your saves in `exported_save_files/` (or your chosen directory), created next to the executable (or project root if running from source)
 
 ### Run from source
 
