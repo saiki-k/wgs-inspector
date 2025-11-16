@@ -76,9 +76,25 @@ async function runCLI() {
 			console.log(chalk.bold.green(`\n✓ Using ${chalk[exporterColor](exporterName)} exporter`));
 		}
 
-		const defaultExportPath = path.join(process.cwd(), 'exported_save_files');
-		const exportPath = await promptExportDestination(defaultExportPath);
+		const getTimestamp = () => {
+			const now = new Date();
+			return `${[
+				now.getFullYear(),
+				String(now.getMonth() + 1).padStart(2, '0'),
+				String(now.getDate()).padStart(2, '0'),
+			].join('.')}-${[
+				String(now.getHours()).padStart(2, '0'),
+				String(now.getMinutes()).padStart(2, '0'),
+				String(now.getSeconds()).padStart(2, '0'),
+			].join('.')}`;
+		};
 
+		const defaultExportPath = path.join(
+			process.cwd(),
+			'exported_wgs_save_files',
+			`${getTimestamp()}__${selectedPackage.packageName}${exportMethod === 'generic' ? '__generic-export' : ''}`
+		);
+		const exportPath = await promptExportDestination(defaultExportPath);
 		console.log(chalk.bold(`\n📤 Exporting to: ${chalk.cyan(exportPath)}`));
 
 		const results = {

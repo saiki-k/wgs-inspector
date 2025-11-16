@@ -27,7 +27,7 @@ You can either use the pre-built standalone executable or run the project from s
     - **Game-specific exporter** (if available) - Exports files in a structured format as defined by the exporter
     - **Generic exporter** - Exports files as they are found in the containers
 
-5. Find your saves in `exported_save_files/` (or your chosen directory), created next to the executable (or project root if running from source)
+5. Find your saves in a timestamped subfolder inside `exported_wgs_save_files/` (or your chosen directory), created next to the executable (or project root if running from source)
 
 ### Run from source
 
@@ -54,18 +54,19 @@ You can either use the pre-built standalone executable or run the project from s
 When a game-specific exporter is available, saves are exported in a structured format as defined by the exporter. For instance, the Hollow Knight / Hollow Knight: Silksong exporter exports files like so:
 
 ```
-exported_save_files/
-├── user1.dat                    # Save slot 1
-├── user2.dat                    # Save slot 2
-├── shared.dat                   # Shared game data (encrypted for Steam)
-├── Restore_Points1/             # Restore points for slot 1
-│   ├── NODELrestoreData1.dat
-│   ├── restoreData2.dat
-│   └── ...
-├── Restore_Points2/             # Restore points for slot 2
-│    ├── NODELrestoreData2.dat
-│    └── ...
-└── ...
+exported_wgs_save_files/
+└── 2025.11.16-14.30.45__TeamCherry.HollowKnightSilksong_y4jvztpgccj42/
+    ├── user1.dat                    # Save slot 1
+    ├── user2.dat                    # Save slot 2
+    ├── shared.dat                   # Shared game data (encrypted for Steam)
+    ├── Restore_Points1/             # Restore points for slot 1
+    │   ├── NODELrestoreData1.dat
+    │   ├── restoreData2.dat
+    │   └── ...
+    ├── Restore_Points2/             # Restore points for slot 2
+    │    ├── NODELrestoreData2.dat
+    │    └── ...
+    └── ...
 ```
 
 ### With the generic exporter
@@ -73,12 +74,13 @@ exported_save_files/
 For games without a specific exporter, or when using the generic exporter, files are exported as they are found in the containers. For instance, a generic export for Hollow Knight save files looks like this:
 
 ```
-exported_save_files/
-├── save1/          # Container name
-│   └── user.dat    # File name
-├── Preferences/    # Container name
-│   └── Data        # File name
-└── ...
+exported_wgs_save_files/
+└── 2025.11.16-14.30.45__TeamCherry.15373CD61C66B_y4jvztpgccj42__generic-export/
+    ├── save1/          # Container name
+    │   └── user.dat    # File name
+    ├── Preferences/    # Container name
+    │   └── Data        # File name
+    └── ...
 
 ```
 

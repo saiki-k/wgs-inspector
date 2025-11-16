@@ -4,12 +4,12 @@ This exporter converts WGS container files for Hollow Knight and Hollow Knight: 
 
 ## File Organization
 
-| WGS Container           | File Pattern           | Exported As                            |
-| ----------------------- | ---------------------- | -------------------------------------- |
-| SharedData              | sharedData.dat         | `exported_save_files/shared.dat`       |
-| Save1, Save2, ...       | user\*.dat             | `exported_save_files/user*.dat`        |
-| Restore1, Restore2, ... | user\*.dat             | `exported_save_files/user*.dat`        |
-| Restore1, Restore2, ... | NODELrestoreData\*.dat | `exported_save_files/Restore_Points#/` |
+| WGS Container           | File Pattern           | Exported As                                                       |
+| ----------------------- | ---------------------- | ----------------------------------------------------------------- |
+| SharedData              | sharedData.dat         | `exported_wgs_save_files/{timestamp}__{package}/shared.dat`       |
+| Save1, Save2, ...       | user\*.dat             | `exported_wgs_save_files/{timestamp}__{package}/user*.dat`        |
+| Restore1, Restore2, ... | user\*.dat             | `exported_wgs_save_files/{timestamp}__{package}/user*.dat`        |
+| Restore1, Restore2, ... | NODELrestoreData\*.dat | `exported_wgs_save_files/{timestamp}__{package}/Restore_Points#/` |
 
 ## Encryption
 
@@ -75,16 +75,17 @@ const results = exporterModule.exporter(scanData, './output_dir', { exported: []
 ## Output Structure
 
 ```
-exported_save_files/
-├── user1.dat                    # Save slot 1
-├── user2.dat                    # Save slot 2
-├── shared.dat                   # Shared game data (encrypted for Steam)
-├── Restore_Points1/             # Restore points for slot 1
-│   ├── NODELrestoreData1.dat
-│   ├── restoreData2.dat
-│   └── ...
-├── Restore_Points2/             # Restore points for slot 2
-│    ├── NODELrestoreData2.dat
-│    └── ...
-└── ...
+exported_wgs_save_files/
+└── 2025.11.16-14.30.45__TeamCherry.HollowKnightSilksong_y4jvztpgccj42/
+    ├── user1.dat                    # Save slot 1
+    ├── user2.dat                    # Save slot 2
+    ├── shared.dat                   # Shared game data (encrypted for Steam)
+    ├── Restore_Points1/             # Restore points for slot 1
+    │   ├── NODELrestoreData1.dat
+    │   ├── restoreData2.dat
+    │   └── ...
+    ├── Restore_Points2/             # Restore points for slot 2
+    │    ├── NODELrestoreData2.dat
+    │    └── ...
+    └── ...
 ```
