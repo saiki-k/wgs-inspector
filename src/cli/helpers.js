@@ -127,19 +127,18 @@ async function promptExportConfirmation(availableExporter, genericExporter) {
 		return { shouldExport, useExporter: false };
 	}
 
-	// If the available exporter is already generic, skip the choice
-	if (availableExporter.name === genericExporter.name) {
-		return {
-			shouldExport: true,
-			useExporter: true,
-			exportMethod: 'generic',
-		};
-	}
-
 	const exporterName = availableExporter.name;
 	const exporterColor = availableExporter.color || 'cyan';
 	const genericName = genericExporter.name;
 	const genericColor = genericExporter.color || 'yellow';
+
+	let availableExporterChoice = null;
+	if (availableExporter.name !== genericExporter.name) {
+		availableExporterChoice = {
+			name: `Use ${chalk[exporterColor](exporterName)} exporter`,
+			value: 'exporter',
+		};
+	}
 
 	const { exportMethod } = await inquirer.prompt([
 		{
@@ -147,10 +146,7 @@ async function promptExportConfirmation(availableExporter, genericExporter) {
 			name: 'exportMethod',
 			message: 'How would you like to export these files?',
 			choices: [
-				{
-					name: `Use ${chalk[exporterColor](exporterName)} exporter`,
-					value: 'exporter',
-				},
+				...(availableExporterChoice ? [availableExporterChoice] : []),
 				{
 					name: `Use ${chalk[genericColor](genericName)} exporter`,
 					value: 'generic',
